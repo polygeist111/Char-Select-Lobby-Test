@@ -61,12 +61,14 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
         if (IsHost)
         {
-            
+            joinCodeText.SetText("" + HostSingleton.Instance.RelayHostData.JoinCode);
+            joinCodePlaceholder.SetText("");
+            LobbySceneManagement.singleton.joinCodeText = joinCodeText;
+            LobbySceneManagement.singleton.joinCode = "" + HostSingleton.Instance.RelayHostData.JoinCode;
             //Debug.Log("Join code: " + HostSingleton.Instance.RelayHostData.JoinCode);
         }
-        joinCodeText.SetText("" + HostSingleton.Instance.RelayHostData.JoinCode);
-        joinCodePlaceholder.SetText("");
         
+
     }
 
     public override void OnNetworkDespawn()

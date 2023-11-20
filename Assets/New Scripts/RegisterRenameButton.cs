@@ -14,11 +14,12 @@ public class RegisterRenameButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (LobbySceneManagement.singleton.renameButtonHolder == null) {
+            LobbySceneManagement.singleton.renameButtonHolder = gameObject;
+        }
     }
 
     void Awake() {
-        LobbySceneManagement.singleton.renameButtonHolder = gameObject;
     }
 
     public void proofOfLife() {

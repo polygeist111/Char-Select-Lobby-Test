@@ -11,6 +11,9 @@ public class LobbySceneManagement : NetworkBehaviour
     public bool[] camsTaken = new bool[4];
     public Transform[] players = new Transform[4];
 
+    [SerializeField] public TMP_Text joinCodeText;
+    public string joinCode;
+
     
     [SerializeField] public PlayerCard[] playerCards;
     [SerializeField] public TMP_Text[] playerNames;
@@ -45,6 +48,9 @@ public class LobbySceneManagement : NetworkBehaviour
         //Debug.Log("alive");
         if (renameButton == null) {
             renameButton = renameButtonHolder.GetComponent<Button>();
+        }
+        if (joinCodeText.text.Length == 0) {
+            joinCodeText.SetText("" + joinCode);
         }
     }
 
