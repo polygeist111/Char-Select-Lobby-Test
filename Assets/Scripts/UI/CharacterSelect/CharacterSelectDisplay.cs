@@ -11,9 +11,10 @@ public class CharacterSelectDisplay : NetworkBehaviour
     [SerializeField] private Transform charactersHolder;
     [SerializeField] private CharacterSelectButton selectButtonPrefab;
     [SerializeField] private PlayerCard[] playerCards;
-    [SerializeField] private GameObject characterInfoPanel;
-    [SerializeField] private TMP_Text characterNameText;
-    [SerializeField] private Transform introSpawnPoint;
+    //[SerializeField] private GameObject characterInfoPanel;
+    //[SerializeField] private TMP_Text characterNameText;
+    //[SerializeField] private Transform introSpawnPoint;
+    [SerializeField] private TMP_Text joinCodePlaceholder;    
     [SerializeField] private TMP_Text joinCodeText;
     [SerializeField] private Button lockInButton;
 
@@ -24,6 +25,11 @@ public class CharacterSelectDisplay : NetworkBehaviour
     private void Awake()
     {
         players = new NetworkList<CharacterSelectState>();
+
+        //
+        var canvasGroup = GetComponent<CanvasGroup>();
+        canvasGroup.interactable = true;
+        canvasGroup.enabled = true;
     }
 
     public override void OnNetworkSpawn()
@@ -55,7 +61,9 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
         if (IsHost)
         {
-            joinCodeText.text = HostSingleton.Instance.RelayHostData.JoinCode;
+            joinCodeText.SetText("" + HostSingleton.Instance.RelayHostData.JoinCode);
+            joinCodePlaceholder.SetText("");
+            //Debug.Log("Join code: " + HostSingleton.Instance.RelayHostData.JoinCode);
         }
     }
 
@@ -93,6 +101,7 @@ public class CharacterSelectDisplay : NetworkBehaviour
     {
         for (int i = 0; i < players.Count; i++)
         {
+            Debug.Log("character: " + character);
             if (players[i].ClientId != NetworkManager.Singleton.LocalClientId) { continue; }
 
             if (players[i].IsLockedIn) { return; }
@@ -102,23 +111,24 @@ public class CharacterSelectDisplay : NetworkBehaviour
             if (IsCharacterTaken(character.Id, false)) { return; }
         }
 
-        characterNameText.text = character.DisplayName;
+        //characterNameText.text = character.DisplayName;
 
-        characterInfoPanel.SetActive(true);
+        //characterInfoPanel.SetActive(true);
 
         if (introInstance != null)
         {
             Destroy(introInstance);
         }
 
-        introInstance = Instantiate(character.IntroPrefab, introSpawnPoint);
-
+        //introInstance = Instantiate(character.IntroPrefab, introSpawnPoint);
+        Debug.Log("made it here");
         SelectServerRpc(character.Id);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void SelectServerRpc(int characterId, ServerRpcParams serverRpcParams = default)
-    {
+    {   
+        Debug.Log("made it to SelectServerRPC");
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != serverRpcParams.Receive.SenderClientId) { continue; }
@@ -185,15 +195,21 @@ public class CharacterSelectDisplay : NetworkBehaviour
             }
         }
 
+        
         foreach (var button in characterButtons)
         {
             if (button.IsDisabled) { continue; }
 
             if (IsCharacterTaken(button.Character.Id, false))
             {
+                Debug.Log("button disabled");
                 button.SetDisabled();
             }
+            
+                        Debug.Log(button.IsDisabled);
+
         }
+        
 
         foreach (var player in players)
         {
@@ -201,17 +217,17 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
             if (player.IsLockedIn)
             {
-                lockInButton.interactable = false;
+                //lockInButton.interactable = false;
                 break;
             }
 
             if (IsCharacterTaken(player.CharacterId, false))
             {
-                lockInButton.interactable = false;
+                //lockInButton.interactable = false;
                 break;
             }
 
-            lockInButton.interactable = true;
+            //lockInButton.interactable = true;
 
             break;
         }
@@ -233,5 +249,10 @@ public class CharacterSelectDisplay : NetworkBehaviour
         }
 
         return false;
+    }
+
+    //
+    void Update() {
+        
     }
 }

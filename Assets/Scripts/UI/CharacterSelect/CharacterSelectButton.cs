@@ -23,6 +23,7 @@ public class CharacterSelectButton : MonoBehaviour
 
     public void SelectCharacter()
     {
+        Debug.Log("selecting character " + Character);
         characterSelect.Select(Character);
     }
 
@@ -32,4 +33,6 @@ public class CharacterSelectButton : MonoBehaviour
         disabledOverlay.SetActive(true);
         button.interactable = false;
     }
+
 }
+

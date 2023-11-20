@@ -33,4 +33,14 @@ public class PlayerCard : MonoBehaviour
     {
         visuals.SetActive(false);
     }
+
+    void Awake() {
+        //Register with scene manager
+        var name = gameObject.name;
+        int id = int.Parse(name.Substring(name.Length - 1));
+        Debug.Log("PlayerCard ID: " + id);
+        LobbySceneManagement.singleton.playerCards[id - 1] = this;
+        LobbySceneManagement.singleton.playerNames[id - 1] = playerNameText;
+
+    }
 }
