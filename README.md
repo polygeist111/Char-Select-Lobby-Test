@@ -1,2 +1,2 @@
-# Multiplayer-Character-Select
-Repo for my Multiplayer-Character-Select tutorial series.
+# Multiplayer-Lobby-Test
+Repo for multiplayer lobby testing related to Cerise Oasis
