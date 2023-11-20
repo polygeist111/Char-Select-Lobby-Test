@@ -51,7 +51,7 @@ public class RegisterPlayer : NetworkBehaviour
         }
         */
         if (identity <= 0) {
-            identity = LobbySceneManagement.singleton.identifyPlayer(identity);
+            identity = LobbySceneManagement.singleton.identifyPlayer(this);
         }
         /*
         if (rename == null) {

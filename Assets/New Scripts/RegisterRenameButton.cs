@@ -33,7 +33,7 @@ public class RegisterRenameButton : MonoBehaviour
             Debug.LogError("Empty name not allowed");
             return;
         }
-        LobbySceneManagement.singleton.renamePlayerRpc(GetComponent<TMP_InputField>().text);
+        LobbySceneManagement.singleton.renamePlayerServerRpc(GetComponent<TMP_InputField>().text);
 
     }
 
