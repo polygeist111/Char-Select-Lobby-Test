@@ -14,10 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LobbyScene.unity
     guid: 739d41eb6dcc4fc4094f264a7ee4ae40
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/CharacterSelect/CharacterSelect.unity
     guid: b7544d5a30d9eed449267cef7699537b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Gameplay.unity
     guid: fd944f928e3cdc84686a7562695b5c1d
   m_configObjects: {}

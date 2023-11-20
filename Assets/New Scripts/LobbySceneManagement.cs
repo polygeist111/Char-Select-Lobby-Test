@@ -74,19 +74,36 @@ public class LobbySceneManagement : NetworkBehaviour
         return -1;
     }
 
+    public RegisterPlayer getLocalPlayer() {
+        foreach(RegisterPlayer player in players) {
+            if (player.IsLocalPlayer) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    /*
+    public void Clicked(object sender, System.EventArgs e) {
+        if (IsLocalPlayer) {
+            Debug.Log("called click server rpc");
+            int PlayerIdentifier = (sender as RegisterPlayer).identity;
+            ClickedServerRpc(PlayerIdentifier);
+        }
+    }*/
+
     public void Clicked(object sender, System.EventArgs e) {
         Debug.Log("player clicked manager");
         int PlayerIdentifier = (sender as RegisterPlayer).identity;
         mostRecentPlayerClick = PlayerIdentifier;
         Debug.Log(mostRecentPlayerClick);
+        (sender as RegisterPlayer).ClickedServerRpc(mostRecentPlayerClick);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void renamePlayerServerRpc(string name) {
-        Debug.Log("Renaming player " + mostRecentPlayerClick + " to: " + name); 
-        playerNames[mostRecentPlayerClick - 1].SetText(name);       
-        //renamePlayerServerRpc(identity);
+    public void renamePlayer(string text) {
+        getLocalPlayer().renamePlayerServerRpc(text);
     }
+    
 
     /*
     [ServerRpc(RequireOwnership = false)]

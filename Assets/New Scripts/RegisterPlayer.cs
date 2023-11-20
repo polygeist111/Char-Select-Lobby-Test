@@ -33,6 +33,7 @@ public class RegisterPlayer : NetworkBehaviour
         if (Input.GetMouseButtonDown(0)) {
             Debug.Log("Player clicked local");
             OnPlayerClick(this, System.EventArgs.Empty);
+            Debug.Log(IsLocalPlayer + " " + IsHost + " " + IsClient + " " + IsServer);
         }  
         /*
         if (!registered) {
@@ -50,9 +51,12 @@ public class RegisterPlayer : NetworkBehaviour
             }
         }
         */
-        if (identity <= 0) {
-            identity = LobbySceneManagement.singleton.identifyPlayer(this);
+        if (IsLocalPlayer) {
+            if (identity <= 0) {
+                identity = LobbySceneManagement.singleton.identifyPlayer(this);
+            }
         }
+        
         /*
         if (rename == null) {
             Debug.Log("Button: " + LobbySceneManagement.singleton.renameButton);
@@ -61,6 +65,42 @@ public class RegisterPlayer : NetworkBehaviour
             // /rename.onClick.AddListener(renamePlayer);
         }
         */
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ClickedServerRpc(int playerID) {
+        Debug.Log("player clicked server");
+        LobbySceneManagement.singleton.mostRecentPlayerClick = playerID;
+        Debug.Log(LobbySceneManagement.singleton.mostRecentPlayerClick);
+        if (IsServer) {
+            ClickedClientRpc(playerID);
+        }
+    }
+
+    [ClientRpc]
+    public void ClickedClientRpc(int playerID) {
+        Debug.Log("player clicked client");
+        LobbySceneManagement.singleton.mostRecentPlayerClick = playerID;
+        Debug.Log(LobbySceneManagement.singleton.mostRecentPlayerClick);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void renamePlayerServerRpc(string name) {
+        Debug.Log("Renaming player " + LobbySceneManagement.singleton.mostRecentPlayerClick + " to: " + name + " on server"); 
+        LobbySceneManagement.singleton.playerNames[LobbySceneManagement.singleton.mostRecentPlayerClick - 1].SetText(name);   
+        if (IsServer) {
+            //callClientRename(name);
+            renamePlayerClientRpc(name);    
+
+        }
+        //renamePlayerServerRpc(identity);
+    }
+
+    [ClientRpc]
+    public void renamePlayerClientRpc(string name) {
+        Debug.Log("Renaming player " + LobbySceneManagement.singleton.mostRecentPlayerClick + " to: " + name + " on client"); 
+        LobbySceneManagement.singleton.playerNames[LobbySceneManagement.singleton.mostRecentPlayerClick - 1].SetText(name);   
+        //renamePlayerServerRpc(identity);
     }
 
     /*
