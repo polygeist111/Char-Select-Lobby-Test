@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
+using UnityEngine.Networking;
 using TMPro;
 
 public class LobbySceneManagement : NetworkBehaviour
 {
     public static LobbySceneManagement singleton = null;
+    public int mostRecentPlayerClick;
     public bool[] camsTaken = new bool[4];
     public RegisterPlayer[] players = new RegisterPlayer[4];
     private int playerCount = 0;
-    public int mostRecentPlayerClick;
 
     [SerializeField] public TMP_Text joinCodeText;
     public string joinCode;
@@ -80,7 +81,8 @@ public class LobbySceneManagement : NetworkBehaviour
         Debug.Log(mostRecentPlayerClick);
     }
 
-    public void renamePlayer(string name) {
+    [ServerRpc(RequireOwnership = false)]
+    public void renamePlayerServerRpc(string name) {
         Debug.Log("Renaming player " + mostRecentPlayerClick + " to: " + name); 
         playerNames[mostRecentPlayerClick - 1].SetText(name);       
         //renamePlayerServerRpc(identity);

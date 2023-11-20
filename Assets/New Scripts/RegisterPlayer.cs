@@ -25,7 +25,6 @@ public class RegisterPlayer : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-    
     }
 
     // Update is called once per frame
@@ -52,7 +51,7 @@ public class RegisterPlayer : NetworkBehaviour
         }
         */
         if (identity <= 0) {
-            identity = LobbySceneManagement.singleton.identifyPlayer(this);
+            identity = LobbySceneManagement.singleton.identifyPlayer(identity);
         }
         /*
         if (rename == null) {
