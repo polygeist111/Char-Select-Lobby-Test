@@ -55,6 +55,6 @@ public class RegisterPlayer : MonoBehaviour
 
     void renamePlayer() {
         Debug.Log("local click");
-        LobbySceneManagement.singleton.renamePlayer(identity);
+        LobbySceneManagement.singleton.renamePlayerServerRpc(identity);
     }
 }

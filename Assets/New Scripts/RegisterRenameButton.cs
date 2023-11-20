@@ -18,7 +18,7 @@ public class RegisterRenameButton : MonoBehaviour
     }
 
     void Awake() {
-        LobbySceneManagement.singleton.renameButton = GetComponent<Button>();
+        LobbySceneManagement.singleton.renameButtonHolder = gameObject;
     }
 
     public void proofOfLife() {

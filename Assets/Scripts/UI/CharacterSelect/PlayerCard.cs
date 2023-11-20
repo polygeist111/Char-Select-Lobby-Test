@@ -8,7 +8,7 @@ public class PlayerCard : MonoBehaviour
     [SerializeField] private GameObject visuals;
     [SerializeField] private Image characterIconImage;
     [SerializeField] private TMP_Text playerNameText;
-    [SerializeField] private TMP_Text characterNameText;
+    //[SerializeField] private TMP_Text characterNameText;
 
     public void UpdateDisplay(CharacterSelectState state)
     {
@@ -17,7 +17,7 @@ public class PlayerCard : MonoBehaviour
             var character = characterDatabase.GetCharacterById(state.CharacterId);
             characterIconImage.sprite = character.Icon;
             characterIconImage.enabled = true;
-            characterNameText.text = character.DisplayName;
+            //characterNameText.text = character.DisplayName;
         }
         else
         {

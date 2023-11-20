@@ -19,7 +19,7 @@ public class LobbySceneManagement : NetworkBehaviour
 
 
 
-    //[SerializeField] private GameObject renameButtonHolder;
+    [SerializeField] public GameObject renameButtonHolder;
     public Button renameButton;
     
 
@@ -37,13 +37,15 @@ public class LobbySceneManagement : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //renameButton = renameButtonHolder.GetComponent<Button>();
     }
 
     // Update is called once per frame
     void Update()
     {
         //Debug.Log("alive");
+        if (renameButton == null) {
+            renameButton = renameButtonHolder.GetComponent<Button>();
+        }
     }
 
     //void updatePlayerCards
@@ -60,8 +62,9 @@ public class LobbySceneManagement : NetworkBehaviour
         return -1;
     }
 
+    [ServerRpc]
     //Renames player on playercard
-    public void renamePlayer(int identity) {
+    public void renamePlayerServerRpc(int identity) {
         Debug.Log("Player " + identity + " was here");
         playerNames[identity - 1].SetText("Player " + identity + " was here");
     }
