@@ -257,6 +257,9 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
     //
     void Update() {
-        
+        if (LobbySceneManagement.singleton.joinCodeText == null) {
+            LobbySceneManagement.singleton.joinCodeText = joinCodeText;
+            LobbySceneManagement.singleton.joinCode = "" + HostSingleton.Instance.RelayHostData.JoinCode;
+        }  
     }
 }

@@ -9,7 +9,9 @@ public class LobbySceneManagement : NetworkBehaviour
 {
     public static LobbySceneManagement singleton = null;
     public bool[] camsTaken = new bool[4];
-    public Transform[] players = new Transform[4];
+    public RegisterPlayer[] players = new RegisterPlayer[4];
+    private int playerCount = 0;
+    public int mostRecentPlayerClick;
 
     [SerializeField] public TMP_Text joinCodeText;
     public string joinCode;
@@ -52,26 +54,44 @@ public class LobbySceneManagement : NetworkBehaviour
         if (joinCodeText.text.Length == 0) {
             joinCodeText.SetText("" + joinCode);
         }
+  
     }
 
     //void updatePlayerCards
 
-    public int identifyPlayer(Transform playerTransform) {
+    public int identifyPlayer(RegisterPlayer player) {
         for (int i = 0; i < 4; i++) {
             if (!camsTaken[i]) {
                 camsTaken[i] = true;
                 Debug.Log("sent transform " + (i + 1));
-                players[i] = playerTransform;
+                players[i] = player;
+                playerCount++;
+                players[i].OnPlayerClick += Clicked;
                 return i + 1;
             }
         }
         return -1;
     }
 
-    [ServerRpc]
+    public void Clicked(object sender, System.EventArgs e) {
+        Debug.Log("player clicked manager");
+        int PlayerIdentifier = (sender as RegisterPlayer).identity;
+        mostRecentPlayerClick = PlayerIdentifier;
+        Debug.Log(mostRecentPlayerClick);
+    }
+
+    public void renamePlayer(string name) {
+        Debug.Log("Renaming player " + mostRecentPlayerClick + " to: " + name); 
+        playerNames[mostRecentPlayerClick - 1].SetText(name);       
+        //renamePlayerServerRpc(identity);
+    }
+
+    /*
+    [ServerRpc(RequireOwnership = false)]
     //Renames player on playercard
     public void renamePlayerServerRpc(int identity) {
         Debug.Log("Player " + identity + " was here");
-        playerNames[identity - 1].SetText("Player " + identity + " was here");
+        LobbySceneManagement.singleton.playerNames[identity - 1].SetText("Player " + identity + " was here");
     }
+    */
 }
