@@ -12,7 +12,6 @@ public class LobbySceneManagement : NetworkBehaviour
     public int mostRecentPlayerClick;
     public bool[] camsTaken = new bool[4];
     public RegisterPlayer[] players = new RegisterPlayer[4];
-    private int playerCount = 0;
 
     [SerializeField] public TMP_Text joinCodeText;
     public string joinCode;
@@ -27,6 +26,19 @@ public class LobbySceneManagement : NetworkBehaviour
 
     [SerializeField] public GameObject renameButtonHolder;
     public Button renameButton;
+    public TMP_Text localNameText;
+
+    private Object localPlayerVar;
+    public int localPlayerID; //not working correctly rn
+
+    public string[,] playerLobbyInfo = new string[4, 2]; //First col names, second col ready status
+    public int[,] statsArray = new int[4, 4]; //kills, assists, deaths, damage
+    //Add array to store character choices? or find it in other scripts
+
+    public TMP_Text LobbyHeader;
+    public LevelSelector levelSelector;
+    public string SceneToPlay = "Urban";
+
     
 
     void Awake() {
@@ -55,6 +67,26 @@ public class LobbySceneManagement : NetworkBehaviour
         if (joinCodeText.text.Length == 0) {
             joinCodeText.SetText("" + joinCode);
         }
+
+
+        if (localPlayerVar == null) {
+            localPlayerVar = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
+            Debug.Log("trying to initialize");
+            if (localPlayerVar != null) {
+                initializeNewPlayerManager();
+            } 
+        }
+
+        for (int r = 0; r < 4; r++) {
+            //Player lobby info (name, ready state)
+            for (int c1 = 0; c1 < 2; c1++) {
+                if (c1 == 0 && playerLobbyInfo[r, c1] != playerNames[r].text && playerLobbyInfo[r, c1] != null) {
+                    playerNames[r].text = playerLobbyInfo[r, c1];
+                }
+            }
+        }
+
+
   
     }
 
@@ -63,11 +95,11 @@ public class LobbySceneManagement : NetworkBehaviour
     public int identifyPlayer(RegisterPlayer player) {
         for (int i = 0; i < 4; i++) {
             if (!camsTaken[i]) {
-                camsTaken[i] = true;
+                //camsTaken[i] = true;
                 Debug.Log("sent transform " + (i + 1));
-                players[i] = player;
-                playerCount++;
-                players[i].OnPlayerClick += Clicked;
+                localPlayerID = i + 1;
+                player.identifyThisPlayerServerRpc(i);
+                //players[i] = player;
                 return i + 1;
             }
         }
@@ -75,12 +107,19 @@ public class LobbySceneManagement : NetworkBehaviour
     }
 
     public RegisterPlayer getLocalPlayer() {
+        /*
         foreach(RegisterPlayer player in players) {
             if (player.IsLocalPlayer) {
                 return player;
             }
         }
         return null;
+        */
+        return NetworkManager.LocalClient.PlayerObject.GetComponent<RegisterPlayer>();
+    }
+
+    public ulong getLocalPlayerNetworkID() {
+        return NetworkManager.LocalClient.ClientId;
     }
 
     /*
@@ -95,13 +134,20 @@ public class LobbySceneManagement : NetworkBehaviour
     public void Clicked(object sender, System.EventArgs e) {
         Debug.Log("player clicked manager");
         int PlayerIdentifier = (sender as RegisterPlayer).identity;
-        mostRecentPlayerClick = PlayerIdentifier;
-        Debug.Log(mostRecentPlayerClick);
-        (sender as RegisterPlayer).ClickedServerRpc(mostRecentPlayerClick);
+        if (PlayerIdentifier == getLocalPlayer().identity) {
+            mostRecentPlayerClick = PlayerIdentifier;
+            Debug.Log(mostRecentPlayerClick);
+            (sender as RegisterPlayer).ClickedServerRpc(mostRecentPlayerClick);
+        }
     }
 
     public void renamePlayer(string text) {
+        localNameText.SetText(text);
         getLocalPlayer().renamePlayerServerRpc(text);
+    }
+
+    public void reIDPlayer() {
+        getLocalPlayer().identifyThisPlayerServerRpc(getLocalPlayer().identity - 1);
     }
     
 
@@ -113,4 +159,17 @@ public class LobbySceneManagement : NetworkBehaviour
         LobbySceneManagement.singleton.playerNames[identity - 1].SetText("Player " + identity + " was here");
     }
     */
+
+    public void initializeNewPlayerManager() {
+        Debug.Log("initializing new player: " + /*NetworkManager.Singleton.LocalClient.PlayerObject.name*/NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject());
+        NetworkManager.LocalClient.PlayerObject.GetComponent<RegisterPlayer>().startManagerServerRpc();
+    }
+
+    public void changeReady(string ready) {
+        getLocalPlayer().changeReadyServerRpc(ready);
+    }
+
+    public void updateSelectedLevel() {
+        getLocalPlayer().updateSelectedLevelServerRpc();
+    }
 }

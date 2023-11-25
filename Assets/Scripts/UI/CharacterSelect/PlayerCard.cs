@@ -24,7 +24,8 @@ public class PlayerCard : MonoBehaviour
             characterIconImage.enabled = false;
         }
 
-        playerNameText.text = state.IsLockedIn ? $"Player {state.ClientId}" : $"Player {state.ClientId} (Picking...)";
+        //playerNameText.text = state.IsLockedIn ? $"Player {state.ClientId}" : $"Player {state.ClientId} (Picking...)";
+        playerNameText.text = $"Player {state.ClientId + 1}";
 
         visuals.SetActive(true);
     }

@@ -108,7 +108,8 @@ public class MatchplayNetworkServer : IDisposable
     {
         gameHasStarted = true;
 
-        NetworkManager.Singleton.SceneManager.LoadScene("Gameplay", LoadSceneMode.Single);
+        //NetworkManager.Singleton.SceneManager.LoadScene("Gameplay", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene(LobbySceneManagement.singleton.SceneToPlay, LoadSceneMode.Single);
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
@@ -148,6 +149,8 @@ public class MatchplayNetworkServer : IDisposable
         response.CreatePlayerObject = true;
         response.Rotation = Quaternion.identity;
         response.Pending = false;
+
+        Debug.Log("About to call player prefab setup");
 
         var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
         Task.Factory.StartNew(

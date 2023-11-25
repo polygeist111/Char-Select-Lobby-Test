@@ -16,26 +16,12 @@ public class RegisterRenameButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (LobbySceneManagement.singleton.renameButtonHolder == null) {
-            LobbySceneManagement.singleton.renameButtonHolder = gameObject;
+        if (LobbySceneManagement.singleton.renameButton == null) {
+            LobbySceneManagement.singleton.renameButton = GetComponentInChildren<Button>();
         }
-    }
-
-    void Awake() {
-
-    }
-
-    public void finishRename() {
-        if (string.IsNullOrWhiteSpace(GetComponent<TMP_InputField>().text)) {
-            
-            //LogHandlerSettings.Instance.SpawnErrorPopup(
-                //"Empty Name not allowed."); // Lobby error type, then HTTP error type.
-            Debug.LogError("Empty name not allowed");
-            return;
+        if (LobbySceneManagement.singleton.localNameText == null) {
+            LobbySceneManagement.singleton.localNameText = GetComponentInChildren<TMP_Text>();
         }
-        Debug.Log("local rename");
-        LobbySceneManagement.singleton.renamePlayer(GetComponent<TMP_InputField>().text);
-
     }
 
 }
